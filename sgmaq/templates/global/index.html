@@ -1,0 +1,73 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+
+<main class="container py-5">
+
+    <img src="{% static 'lavado-4.jpg' %}" class="img-fluid my-4" alt="Cleaning Car">
+
+    
+    <div class="hero text-center bg-dark text-white p-5 mb-5 rounded shadow-sm">
+        <h1 class="display-4">Optimiza la gestión de limpieza de coches</h1>
+        <p class="lead">Tu software de gestión de limpieza de coches te permite...</p>
+        <ul class="list-unstyled">
+            <li class="mb-2"><i class="bi bi-check-circle text-warning"></i> Tener una visión general completa del proceso de limpieza de todos tus vehículos.</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-warning"></i> Acceder a un historial detallado de todas las tareas de limpieza realizadas.</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-warning"></i> Realizar un seguimiento preciso del progreso de cada tarea en tiempo real.</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-warning"></i> Gestionar de forma eficiente las incidencias que puedan surgir durante el proceso de limpieza.</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-warning"></i> Generar informes personalizados sobre el rendimiento de tu equipo de limpieza.</li>
+        </ul>
+    </div>
+
+
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm bg-light border-0">
+                <div class="card-body p-4 text-dark">
+                    <h2 class="card-title text-dark">¿Qué puedes hacer con la aplicación?</h2>
+                    <p class="card-text">Con nuestra aplicación puedes:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Visualizar en tiempo real el estado de todos tus coches en proceso de limpieza (en vuelo, entregados o rechazados).</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Consultar el historial completo de cada coche, incluyendo las fechas de limpieza, los técnicos responsables y cualquier comentario o nota relevante.</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Recibir notificaciones cuando se complete una tarea o cuando se produzca una incidencia.</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Identificar las causas de los rechazos de los clientes y tomar medidas correctivas para evitar su repetición.</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Generar informes personalizados para analizar el rendimiento de tu equipo de limpieza y tomar decisiones estratégicas.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm bg-light border-0">
+                <div class="card-body p-4 text-dark">
+                    <h2 class="card-title text-dark">Mejora la eficiencia, reduce costes y aumenta la satisfacción del cliente.</h2>
+                    <p class="card-text">Saca el máximo partido de tu software de gestión de limpieza de coches y experimenta las siguientes ventajas:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Optimiza el tiempo y los recursos de tu equipo de limpieza.</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Reduce los costes operativos y mejora la rentabilidad de tu negocio.</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Aumenta la satisfacción de tus clientes con un servicio de limpieza rápido y de calidad.</li>
+                        <li class="mb-2"><i class="bi bi-arrow-right-circle text-warning"></i> Mejora la imagen y la reputación de tu empresa.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p>&copy; 2024 SGMAQ. Todos los derechos reservados.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="#" class="text-white me-3">Política de Privacidad</a>
+                <a href="#" class="text-white">Términos de Servicio</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OM"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+{% endblock %}

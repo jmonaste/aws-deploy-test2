@@ -1,0 +1,48 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+<main class="container py-4">
+  <div class="text-center mb-4">
+    <h1>Dashboard</h1>
+  </div>
+
+  {% load project_custom_tags %}
+
+  <!-- PERFILES ADMINISTRADORES Y DE GESTION -->
+  {% if request.user|has_group:"manager" or request.user|has_group:"admin" %}
+
+    <div class="alert alert-info">
+      <p>You are an admin/manager. You can see the dashboard page.</p>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Número de altas en el sistema por mes</h5>
+      </div>
+      <div class="card-body bg-light text-dark">
+        {{ chart|safe }}
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Número de rechazos en el sistema por mes</h5>
+      </div>
+      <div class="card-body bg-light text-dark">
+        {{ chart_rechazos_por_mes|safe }}
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Número de rechazos en el sistema</h5>
+      </div>
+      <div class="card-body bg-light text-dark">
+        {{ chart_rechazos_por_empleado|safe }}
+      </div>
+    </div>
+
+  {% endif %}
+</main>
+
+{% endblock %}

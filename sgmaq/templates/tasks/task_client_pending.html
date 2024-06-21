@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<h1>Vehículos pendientes de aceptación</h1>
+
+<form action="{% url 'task_search' %}" method="get" class="mb-3">
+        {% csrf_token %}
+        <input type="text" name="q", placeholder="Introduzca VIN">
+        <button type="submit" class="btn btn-primary">Buscar [pdte]</button>
+
+</form>
+
+    {% for task in tasks %}
+
+        <div class="card mb-3">
+
+            <div class="card-header">
+                VIN: {{ task.vin }}
+            </div>
+            
+            <div class="card-body">
+                <div class="row">  
+                    <div class="col">  
+                        <p class="card-text mb-1 text-sm">Trabajador responsable: <strong>{{ task.employee_user }}</strong></p>
+                        <p class="card-text mb-1 text-sm">Responsable asignado: {{ task.responsible_user }}</p>
+                        <p class="card-text mb-1 text-sm">Fecha finalización tarea: {{ task.datecompleted }}</p>
+                    </div>
+                    <div class="col">  
+                        <p class="card-text mb-1">Cliente: {{ task.client }}</p>
+                        <p class="card-text mb-1">Marca: {{ task.carbrand }}</p>
+                        <p class="card-text mb-1">Modelo: {{ task.carmodel }}</p>
+                    </div>
+
+                    <div class="col-auto">  
+
+                        <form method="POST" action="{% url 'task_client_approval' task.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <button type="submit" class="btn btn-secondary">Validar</button>
+                        </form>            
+                        
+                        <form method="GET" action="{% url 'task_client_denial' task.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <button type="submit" class="btn btn-danger">Rechazar</button>
+                        </form>  
+                    </div>
+
+                    
+
+                </div>
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+    <div class="col-auto">  
+        <a href="" class="btn btn-success">Validar todo</a>
+    </div>
+
+
+
+{% endblock %}

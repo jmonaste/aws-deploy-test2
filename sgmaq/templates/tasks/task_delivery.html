@@ -1,0 +1,328 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+  
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Estado actual</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Detalle de tarea</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Histórico</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-report-tab" data-bs-toggle="pill" data-bs-target="#pills-report" type="button" role="tab" aria-controls="pills-report" aria-selected="false">Reporte fotográfico</button>
+    </li>
+  </ul>
+  
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-dark text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">VIN: {{ task.vin }}</h4>
+            <a href="{% url 'tasks' %}" class="btn btn-warning text-dark">Volver</a>
+          </div>
+        </div>
+        <div class="card-body bg-light text-dark">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Actualizar tarea</h5>
+                {% for field in form %}
+                  <div class="form-group mb-3">
+                    {% if field.field.widget.input_type == "checkbox" %}
+                      <div class="form-check">
+                        {{ field }}
+                        {{ field.label_tag }}
+                      </div>
+                    {% else %}
+                      <div class="d-flex justify-content-between align-items-center">
+                        {{ field.label_tag }}
+                        {{ field }}
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </form>
+          <div class="row">
+            <div class="col">
+              <div class="d-flex">
+                <form id="complete-task-form" action="{% url 'complete_task' task.id %}" method="POST">
+                  {% csrf_token %}
+                  <button id="complete-task-button" type="submit" class="btn btn-warning mr-2">Entregar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Detalle de Tarea</h5>
+              </div>
+              <div class="card-body bg-light text-dark">
+                <table class="table table-sm table-striped">
+                  <tbody>
+                    <tr>
+                      <th scope="row">VIN</th>
+                      <td>{{ task.vin }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Proyecto</th>
+                      <td>{{ task.project }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Cliente</th>
+                      <td>{{ task.client }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Información Adicional</h5>
+              </div>
+              <div class="card-body bg-light text-dark">
+                <table class="table table-sm table-striped">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Comentario</th>
+                      <td>{{ task.comment }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Fecha Límite</th>
+                      <td>{{ form.deadline.label }} {{ form.deadline }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Fecha Completada</th>
+                      <td>{{ task.datecompleted }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Usuarios</h5>
+              </div>
+              <div class="card-body bg-light text-dark">
+                <table class="table table-sm table-striped">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Usuario Asignado</th>
+                      <td>{{ task.employee_user }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Usuario Responsable</th>
+                      <td>{{ task.responsible_user }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Otros</h5>
+              </div>
+              <div class="card-body bg-light text-dark">
+                <table class="table table-sm table-striped">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Prioridad</th>
+                      <td>{{ task.priority }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Descripción</th>
+                      <td>{{ task.description }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Importante</th>
+                      <td>
+                        <input type="checkbox" id="important" name="important" value="{{ task.important }}" {% if task.important %}checked{% endif %}>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
+      <div class="container">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Histórico de la tarea</h5>
+          </div>
+          <div class="card-body bg-light text-dark">
+            <table class="table table-striped">
+              <thead class="bg-dark text-white">
+                <tr>
+                  <th>Fecha de Cambio</th>
+                  <th>Usuario</th>
+                  <th>Descripción estado</th>
+                  <th>Motivo rechazo</th>
+                  <th>Comentario cambio estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for entry, user in history %}
+                <tr>
+                  <td>{{ entry.dateofchange }}</td>
+                  <td>{{ user.username }}</td>
+                  <td>{{ entry.descripcion_estado }}</td>
+                  <td>{{ entry.changereason }}</td>
+                  <td>{{ entry.comment }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab-pane fade" id="pills-report" role="tabpanel" aria-labelledby="pills-report-tab" tabindex="0">
+      <div class="container">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Reporte fotográfico</h5>
+          </div>
+          <div class="card-body bg-light text-dark">
+            <form id="image-upload-form" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group mb-3">
+                <input type="file" name="images" class="form-control" multiple>
+              </div>
+              <button id="upload-button" class="btn btn-warning text-dark" type="submit">Upload Image</button>
+            </form>
+            {% if images %}
+            <div id="carouselExample" class="carousel slide mt-4">
+              <div class="carousel-inner">
+                {% for image in images %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                  <img src="{{ image.images.url }}" class="d-block w-100" alt="...">
+                </div>
+                {% endfor %}
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      function checkTaskCompletion() {
+        var allChecked = $('#id_windows').is(':checked') &&
+                         $('#id_chassis').is(':checked') &&
+                         $('#id_wheels').is(':checked') &&
+                         $('#id_upholstery').is(':checked');
+        
+        if (allChecked) {
+          $('#complete-task-button').removeClass('disabled').prop('disabled', false);
+        } else {
+          $('#complete-task-button').addClass('disabled').prop('disabled', true);
+        }
+      }
+  
+      $('input[type="checkbox"]').change(function() {
+        var checkbox = $(this);
+        var isChecked = checkbox.is(':checked');
+        var csrfToken = '{{ csrf_token }}';
+        var fieldName = checkbox.attr('name');
+  
+        $.ajax({
+          url: "{% url 'task_delivery' task.id %}",
+          type: "POST",
+          data: {
+            'csrfmiddlewaretoken': csrfToken,
+            'field': fieldName,
+            'value': isChecked
+          },
+          success: function(response) {
+            console.log('Checkbox updated successfully');
+            checkTaskCompletion();
+          },
+          error: function(xhr, status, error) {
+            console.log('Error updating checkbox: ' + error);
+          }
+        });
+      });
+  
+      checkTaskCompletion();
+    });
+  </script>
+  
+  <script>
+    $(document).ready(function() {
+      $('#upload-button').click(function(event) {
+        event.preventDefault();
+        var formData = new FormData($('#image-upload-form')[0]);
+        $.ajax({
+          url: "{% url 'upload_image' task.id %}",
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function(response) {
+            if (response.status === 'success') {
+              alert('La imagen se ha subido correctamente');
+              location.reload();
+            } else {
+              alert('Error subiendo la imagen: ' + JSON.stringify(response.errors));
+            }
+          },
+          error: function(xhr, status, error) {
+            alert('Error: ' + error);
+          }
+        });
+      });
+    });
+  </script>
+</div>
+
+{% endblock %}

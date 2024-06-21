@@ -1,0 +1,153 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Card for file upload -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-dark text-white">
+            <h2>Cargar fichero</h2>
+        </div>
+        <div class="card-body bg-light text-dark">
+            <form id="uploadForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-warning text-dark d-none" id="uploadButton">Subir</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Card for instructions -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white">
+            <h2>Instrucciones para cargar el fichero</h2>
+        </div>
+        <div class="card-body bg-light text-dark">
+            <p>Esta página permite cargar un fichero Excel para añadir varios trabajos al sistema a la vez. A continuación, se muestra un ejemplo del formato que debe tener el fichero:</p>
+            <table class="table table-bordered bg-white">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>vin</th>
+                        <th>proyecto</th>
+                        <th>cliente</th>
+                        <th>carbrand</th>
+                        <th>carmodel</th>
+                        <th>comment</th>
+                        <th>deadline</th>
+                        <th>responsible</th>
+                        <th>employee</th>
+                        <th>priority</th>
+                        <th>description</th>
+                        <th>important</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AUTHM82633A123458</td>
+                        <td>Entrega Kia marzo 2024</td>
+                        <td>Automovilística del Sur</td>
+                        <td>Suzuki</td>
+                        <td>Swift</td>
+                        <td>Primer comentario</td>
+                        <td>31/12/2024</td>
+                        <td>alejandros</td>
+                        <td>vicentem</td>
+                        <td>0</td>
+                        <td>Descripción tarea 1</td>
+                        <td>TRUE</td>
+                    </tr>
+                    <tr>
+                        <td>BBCDM82633A654324</td>
+                        <td>Entrega Ford Enero 2024</td>
+                        <td>Andes Motor</td>
+                        <td>Peugeot</td>
+                        <td>208</td>
+                        <td>Segundo comentario</td>
+                        <td>30/11/2024</td>
+                        <td>alejandros</td>
+                        <td>vicentem</td>
+                        <td>1</td>
+                        <td>Descripción tarea 2</td>
+                        <td>FALSE</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>El fichero debe tener las siguientes columnas:</p>
+            <ul>
+                <li><strong>vin:</strong> Código único del vehículo.</li>
+                <li><strong>proyecto:</strong> Nombre del proyecto asociado.</li>
+                <li><strong>cliente:</strong> Nombre del cliente.</li>
+                <li><strong>carbrand:</strong> Marca del coche.</li>
+                <li><strong>carmodel:</strong> Modelo del coche.</li>
+                <li><strong>comment:</strong> Comentarios adicionales.</li>
+                <li><strong>deadline:</strong> Fecha límite para la tarea (dd/mm/yyyy).</li>
+                <li><strong>responsible:</strong> Nombre del responsable.</li>
+                <li><strong>employee:</strong> Nombre del empleado asignado.</li>
+                <li><strong>priority:</strong> Prioridad de la tarea (0 o 1).</li>
+                <li><strong>description:</strong> Descripción de la tarea.</li>
+                <li><strong>important:</strong> Indicador de importancia (TRUE o FALSE).</li>
+            </ul>
+            <p>Por cada registro, se indicará si la carga fue satisfactoria o no. Por ejemplo, si el VIN ya está cargado, no se podrá volver a cargar. Los proyectos, clientes, marcas de coche y modelos deben estar registrados, así como los empleados y responsables especificados.</p>
+        </div>
+    </div>
+
+    <div id="results" class="mt-4"></div>
+
+    {% if messages %}
+        <ul class="list-unstyled mt-4">
+            {% for message in messages %}
+                <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        const fileInput = $('input[type="file"]');
+        const uploadButton = $('#uploadButton');
+
+        fileInput.on('change', function() {
+            if (fileInput.val()) {
+                uploadButton.removeClass('d-none').prop('disabled', false);
+            } else {
+                uploadButton.addClass('d-none').prop('disabled', true);
+            }
+        });
+
+        $('#uploadForm').on('submit', function(event) {
+            event.preventDefault();
+            uploadButton.prop('disabled', true);
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload_file' %}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#results').empty();
+                    if (response.results) {
+                        response.results.forEach(function(result) {
+                            var alertClass = result.status === 'success' ? 'alert-success' : 'alert-danger';
+                            var div = $('<div class="alert ' + alertClass + '"></div>');
+                            div.text(result.message);
+                            $('#results').append(div);
+                        });
+                    } else {
+                        $('#results').append('<div class="alert alert-danger">Error: ' + response.error + '</div>');
+                    }
+                    fileInput.val('');  // Clear the file input
+                    uploadButton.addClass('d-none').prop('disabled', true);  // Hide and disable the button again
+                },
+                error: function(xhr, status, error) {
+                    $('#results').append('<div class="alert alert-danger">Error: ' + xhr.responseText + '</div>');
+                    uploadButton.prop('disabled', false);  // Re-enable the button in case of error
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white text-center">
+            <h1 class="h3 mb-0">Descargar lista de lavados</h1>
+        </div>
+        <div class="card-body bg-light text-dark">
+            <form id="date-range-form" class="text-center">
+                <div class="row justify-content-center mb-3">
+                    <div class="col-md-3">
+                        <label for="start-date" class="form-label">Fecha desde:</label>
+                        <input type="text" id="start-date" class="form-control datepicker" placeholder="Selecciona fecha">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="end-date" class="form-label">Fecha hasta:</label>
+                        <input type="text" id="end-date" class="form-control datepicker" placeholder="Selecciona fecha">
+                    </div>
+                </div>
+                <a href="{% url 'generate_pdf' %}" class="btn btn-warning text-dark">Descargar</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add these scripts at the end of the body -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true
+        });
+    });
+</script>
+{% endblock %}

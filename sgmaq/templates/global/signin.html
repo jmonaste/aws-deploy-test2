@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+
+<main class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 30vh;">
+  <div class="card shadow-sm border-0" style="width: 100%; max-width: 400px;">
+    <div class="card-header bg-dark text-white text-center">
+      <h1 class="h3">Signin</h1>
+    </div>
+    <div class="card-body bg-light text-dark">
+      <div class="hero d-flex flex-column justify-content-center align-items-center">
+        {% if error %}
+          <div class="alert alert-danger w-100 text-center">{{ error }}</div>
+        {% endif %}
+
+        <form action="/signin/" method="POST" class="w-100 text-center">
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+          </div>
+          <div class="form-group mb-3">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+          </div>
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-warning text-dark">Signin</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

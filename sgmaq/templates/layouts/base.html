@@ -1,0 +1,125 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGMAC Project</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        body {
+            padding-top: 70px; /* Ajusta este valor según la altura de tu barra de navegación */
+        }
+    </style>
+</head>
+<body>
+
+    {% load project_custom_tags %}
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="container">
+          <img src="{% static 'logo-footer.png' %}" alt="logo SGMAC" width="300">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a href="{% url 'index' %}" class="nav-link active">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'about' %}" class="nav-link">About</a>
+                </li>        
+    
+                <!-- Si está logado-->
+                {% if user.is_authenticated %}
+
+                    <!-- todos los perfiles-->
+                    {% if request.user|has_group:"employee" %} 
+                        <li class="nav-item">
+                            <a href="{% url 'tasks' %}" class="nav-link">Vehículos pendientes</a>
+                        </li>
+                    {% endif %}
+                    
+                    <!-- Sólo perfil admin/manager-->
+                    {% if request.user|has_group:"manager" or request.user|has_group:"admin" %}
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Procesos
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="dropdown-item" href="{% url 'upload_file' %}">Cargar trabajos</a></li>
+                                <li><a class="dropdown-item" href="{% url 'tasks' %}">Vehículos pendientes de lavar</a></li>
+                                <li><a class="dropdown-item" href="{% url 'task_manager_pending' %}">Vehículos pendientes de entregar a cliente</a></li>
+                                <li><a class="dropdown-item" href="{% url 'task_manager_client_pending' %}">Vehículos entregados a cliente pendientes de aceptación</a></li>
+                                <li><a class="dropdown-item" href="{% url 'tasks_history' %}">Vehículos histórico</a></li>
+                                <li><a class="dropdown-item" href="{% url 'download_page' %}">Generar reporte</a></li>
+                            </ul>
+                        </li>             
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Dashboards
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="dropdown-item" href="{% url 'dashboard' %}">Global operaciones</a></li>
+                                <li><a class="dropdown-item" href="{% url 'index' %}">Empleados</a></li>
+                                <li><a class="dropdown-item" href="{% url 'index' %}">Clientes</a></li>
+                                <li><a class="dropdown-item" href="{% url 'index' %}">Rechazos</a></li>
+                                <li><a class="dropdown-item" href="{% url 'index' %}">Aprobaciones</a></li>
+                            </ul>
+                        </li>     
+                    {% endif %}
+                  
+
+
+
+                    <!-- Sólo el perfil del cliente-->
+                    {% if request.user|has_group:"customer" %} 
+                        <li class="nav-item">
+                            <a href="{% url 'task_client_pending' %}" class="nav-link">Aceptación de vehículos</a>
+                        </li>
+                    {% endif %}
+
+
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                    </li> 
+
+
+
+                <!-- Si no está logado-->
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'signup' %}" class="nav-link">Registrarse</a>
+                    </li>    
+                    <li class="nav-item">
+                        <a href="{% url 'signin' %}" class="nav-link">Signin</a>
+                    </li>    
+                {% endif %}
+
+            </ul>
+          </div>
+
+        </div>
+      </nav>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+
+</body>
+</html>
