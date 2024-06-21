@@ -15,24 +15,24 @@ import plotly.express as px
 import os
 from django.conf import settings
 
-from .models import Task
-from .models import MotivoRechazo
 from .models import Project
-from .models import ChangeLog
-from .models import ChangeReason
-from .models import MotivoRechazo
 from .models import Client
 from .models import CarBrand
 from .models import CarModel
+from .models import MotivoRechazo
 from .models import PostImage
+from .models import ChangeReason
+from .models import ChangeLog
+from .models import Task
 
-from .forms import UploadFileForm
+
 from .forms import EmployeeTaskForm
 from .forms import TaskUploadImage
 from .forms import PostImageForm
 from .forms import TaskDeliveryClientForm
 from .forms import TaskFormRechazoManager
 from .forms import TaskFormRechazoCliente
+from .forms import UploadFileForm
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas

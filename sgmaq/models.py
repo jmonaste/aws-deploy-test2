@@ -85,20 +85,8 @@ class Task(models.Model):
     wheels = models.BooleanField(default=False)
     upholstery = models.BooleanField(default=False)
 
-    motivo_rechazo_manager = models.CharField(
-        max_length=2,
-        choices=MotivoRechazo.objects.values_list('codigo', 'descripcion'),
-        null=True,
-        blank=True,
-    )
-    comentario_rechazo_manager = models.TextField(blank=True, null=True)
+    #AQUI VA LO BORRADO
 
-    motivo_rechazo_cliente = models.CharField(
-        max_length=2,
-        choices=MotivoRechazo.objects.values_list('codigo', 'descripcion'),
-        null=True,
-        blank=True,
-    )
     comentario_rechazo_cliente = models.TextField(blank=True, null=True)
 
     flag_rechazado = models.BooleanField(default=False)
