@@ -9,3 +9,6 @@ run:
   command: sh startup.sh
   network:
     port: 8000
+  secrets:
+    - name: DATABASE_SECRET
+      value-from: "arn:aws:secretsmanager:eu-west-3:891377100756:secret:controlapp/database/url-Wwr7m0"
