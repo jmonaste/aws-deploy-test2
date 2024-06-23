@@ -175,22 +175,16 @@ def upload_file(request):
                     try:
                         car_brand = CarBrand.objects.get(brandname=carbrand)
                     except ObjectDoesNotExist:
-                        raise ValueError(f'La marca de coches "{car_brand}" no existe en el sistema.')
+                        raise ValueError(f'La marca de coches "{carbrand}" no existe en el sistema.')
 
                     # Validar el campo carmodel
                     try:
                         car_model = CarModel.objects.get(model=carmodel)
                     except ObjectDoesNotExist:
-                        raise ValueError(f'El modelo "{car_model}" no existe en el sistema.')
-                    
-                    # Validar que la reacion entre marca y modelo 
-                    try:
-                        car_model = CarModel.objects.get(model=carmodel)
-                    except ObjectDoesNotExist:
-                        raise ValueError(f'El modelo "{car_model}" no existe en el sistema.')
-                    
+                        raise ValueError(f'El modelo "{carmodel}" no existe en el sistema.')
 
-
+                    # Validar que la relación entre marca y modelo 
+                    
                     # Validar campos de usuario
                     try:
                         responsible_user_info = User.objects.get(username=responsible_user)
@@ -202,44 +196,42 @@ def upload_file(request):
                     except ObjectDoesNotExist:
                         raise ValueError(f'El usuario "{employee_user}" no existe en el sistema.')
 
-
-
-
                     # Validar del campo prioridad
                     if priority != 1 and priority != 0:
                         raise ValueError(f'El valor del campo "prioridad" en la fila {index + 2} no es válido. Sólo se permiten los valores 0 y 1.')
-                    
 
-
-                    # Consulta SQL para insertar los datos
-                    sql_query = """
-                        INSERT INTO sgmaq_task (
-                            vin, project_id, client_id, carbrand_id, carmodel_id, comment, created,
-                            deadline, employee_user_id, responsible_user_id, priority, description, important, deniedbyclient, windows, chassis, wheels, upholstery, flag_rechazado
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """
-
-                    with connection.cursor() as cursor:
-                        cursor.execute(sql_query, [
-                            vin, project.id, client.id, car_brand.id, car_model.id, comment, created,
-                            deadline, employee_user_info.id, responsible_user_info.id, priority, description, important, deniedbyclient, windows, chassis, wheels, upholstery, flag_rechazado
-                        ])
-                        cursor.execute("SELECT last_insert_rowid()")
-                        new_id = cursor.fetchone()[0]
-
+                    # Crear una nueva instancia de Task usando el método create
+                    task = Task.objects.create(
+                        vin=vin,
+                        project=project,
+                        client=client,
+                        carbrand=car_brand,
+                        carmodel=car_model,
+                        comment=comment,
+                        created=created,
+                        deadline=deadline,
+                        employee_user=employee_user_info,
+                        responsible_user=responsible_user_info,
+                        priority=priority,
+                        description=description,
+                        important=important,
+                        deniedbyclient=deniedbyclient,
+                        windows=windows,
+                        chassis=chassis,
+                        wheels=wheels,
+                        upholstery=upholstery,
+                        flag_rechazado=flag_rechazado
+                    )
 
                     # Create changelog entry
                     ChangeLog.objects.create(
-                        task_id=new_id,
-                        dateofchange = created,
-                        user_id=request.user.id,
-                        descripcion_estado = "Alta en el sistema",  
+                        task=task,
+                        dateofchange=created,
+                        user=request.user,
+                        descripcion_estado="Alta en el sistema",
                         changereason="Alta en el sistema",
                         comment="Alta en el sistema desde carga de fichero"
-                        )
-
-
-
+                    )
 
                     results.append({'index': index, 'status': 'success', 'message': f'{index + 2} - {vin} VIN insertado correctamente en el sistema.'})
                 except Exception as e:
@@ -252,6 +244,9 @@ def upload_file(request):
     else:
         form = UploadFileForm()
         return render(request, 'tasks/tasks_upload.html', {'form': form})
+
+
+
 
 @login_required
 def task_delivery(request, task_id):
